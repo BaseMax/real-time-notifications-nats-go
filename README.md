@@ -1,8 +1,10 @@
 # Real-time Notifications with NATS and Go
 
-Welcome to the Real-time Notifications with NATS and Go repository! In this project, we'll explore the implementation of real-time notifications using the NATS messaging system and the Go programming language. By building this application, you'll gain valuable insights into creating responsive and engaging applications with instant notifications.
+A repository showcasing the implementation of real-time notifications using NATS messaging system and the Go programming language. Learn how to build responsive applications with instant notifications.
 
 ## Project Overview
+
+Welcome to the Real-time Notifications with NATS and Go repository! In this project, we'll explore the implementation of real-time notifications using the NATS messaging system and the Go programming language. By building this application, you'll gain valuable insights into creating responsive and engaging applications with instant notifications.
 
 The primary objective of this project is to demonstrate how to utilize the NATS messaging system to enable real-time notifications in a Go-based application. We'll explore how to set up event communication, publish and subscribe to events, and integrate this functionality into a responsive user interface.
 
