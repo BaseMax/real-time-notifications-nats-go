@@ -25,6 +25,7 @@ Follow these steps to set up and run the project on your local machine:
 
 ```bash
 git clone https://github.com/BaseMax/real-time-notifications-nats-go.git
+cd real-time-notifications-nats-go
 ```
 
 Backend Setup: Navigate to the backend directory and install the required dependencies.
@@ -40,7 +41,7 @@ Start the Backend: In the backend directory, start the Go server.
 go run main.go
 ```
 
-Access the Application: Open your web browser and visit http://localhost:8080 to access the real-time notifications application.
+Access the Application: Open your web browser and visit `http://localhost:8080` to access the real-time notifications application.
 
 ## Contribution Guidelines
 
@@ -51,6 +52,57 @@ Contributions to this repository are encouraged! To contribute, please follow th
 - Implement your changes and commit them with informative commit messages.
 - Push your branch to your forked repository.
 - Create a pull request from your branch to the main branch of this repository.
+
+## Database and Schema Design
+
+In the Real-time Notifications with NATS and Go project, the database and schema play a vital role in managing user activities, events, and preferences. An effective schema design ensures efficient data storage and retrieval, while accommodating the requirements of real-time notifications.
+
+### Database Technology
+
+For this project, we'll use a relational database to store user activities and event data. PostgreSQL, a powerful open-source relational database system, can be an excellent choice due to its robust features and support for complex queries.
+
+### Schema Components
+
+Users Table: Store user information such as user ID, username, email, and preferences for event subscriptions. This table will help manage the preferences of each user.
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    subscription_preferences JSONB
+);
+```
+
+Activities Table: Record user activities as events, including details such as the event type, timestamp, and user ID. This table serves as an event log.
+
+```sql
+CREATE TABLE activities (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    event_type VARCHAR(255) NOT NULL,
+    event_data JSONB,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### Event Data
+
+The event_data field in the activities table will hold the specific data associated with each event. For example, when a user completes a task, the event_data field could store information like task ID, task title, and completion status.
+
+### Subscription Preferences
+
+The subscription_preferences field in the users table will hold user preferences for event subscriptions. This can be structured as a JSON object where each event type maps to a subscription status (e.g., true for subscribed, false for unsubscribed). This allows users to customize which events they want to receive notifications for.
+
+## Integration with NATS
+
+The events stored in the database can be published to the NATS messaging system whenever an activity occurs. Subscribers can then listen to these events and generate real-time notifications based on user preferences.
+
+## Conclusion
+
+A well-designed database schema is a crucial foundation for capturing and managing user activities and events in the context of real-time notifications. By utilizing PostgreSQL and structuring the schema effectively, you'll be able to seamlessly integrate event sourcing and real-time notifications into your application.
+
+Feel free to adjust the schema according to your specific requirements and preferences. Always ensure your schema supports efficient queries and data retrieval while accommodating the real-time nature of your project.
 
 ## License
 
