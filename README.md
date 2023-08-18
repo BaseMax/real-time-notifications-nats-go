@@ -24,7 +24,7 @@ Follow these steps to set up and run the project on your local machine:
 - Clone the Repository: Begin by cloning this repository to your local machine.
 
 ```bash
-git clone https://github.com/YourUsername/real-time-notifications-nats-go.git
+git clone https://github.com/BaseMax/real-time-notifications-nats-go.git
 ```
 
 Backend Setup: Navigate to the backend directory and install the required dependencies.
