@@ -26,5 +26,5 @@ func main() {
 	models.Init(conn)
 
 	r := InitRoutes()
-	r.Logger.Fatal(r.Start(":8000"))
+	r.Logger.Fatal(r.Start(GetRunningAddr()))
 }
