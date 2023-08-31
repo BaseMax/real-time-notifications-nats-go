@@ -24,6 +24,7 @@ func InitRoutes() *echo.Echo {
 	g.POST("products", todo)
 	g.GET("products/:id", todo)
 	g.GET("products", todo)
+	g.GET("products/:order_id", todo)
 	g.PUT("products/:id", todo)
 	g.DELETE("products/:id", todo)
 

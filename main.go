@@ -23,7 +23,9 @@ func main() {
 		log.Fatal("open postgres: ", err)
 	}
 
-	models.Init(conn)
+	if err := models.Init(conn); err != nil {
+		log.Fatal("models init: ", err)
+	}
 
 	r := InitRoutes()
 	r.Logger.Fatal(r.Start(GetRunningAddr()))
