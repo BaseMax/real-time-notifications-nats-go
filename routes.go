@@ -3,21 +3,23 @@ package main
 import (
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
+
+	"github.com/BaseMax/real-time-notifications-nats-go/controllers"
 )
 
 func todo(c echo.Context) error { return nil }
 
 func InitRoutes() *echo.Echo {
 	e := echo.New()
-	g := e.Group("/", echojwt.WithConfig(echojwt.Config{SigningKey: GetJwtSecret()}))
+	g := e.Group("/", echojwt.WithConfig(echojwt.Config{SigningKey: controllers.GetJwtSecret()}))
 
-	e.POST("/register", todo)
-	e.POST("/login", todo)
-	g.POST("refresh", todo)
-	g.GET("users/:id", todo)
-	g.GET("users", todo)
-	g.DELETE("users/:id", todo)
-	g.PUT("users:/id", todo)
+	e.POST("/register", controllers.Register)
+	e.POST("/login", controllers.Login)
+	g.POST("refresh", controllers.Refresh)
+	g.GET("users/:id", controllers.FetchUser)
+	g.GET("users", controllers.FetchAllUsers)
+	g.DELETE("users/:id", controllers.DeleteUser)
+	g.PUT("users:/id", controllers.EditUser)
 
 	g.GET("notifications", todo)
 

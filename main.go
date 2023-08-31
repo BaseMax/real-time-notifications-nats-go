@@ -5,6 +5,7 @@ import (
 
 	"github.com/joho/godotenv"
 
+	"github.com/BaseMax/real-time-notifications-nats-go/controllers"
 	"github.com/BaseMax/real-time-notifications-nats-go/database"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 )
@@ -28,5 +29,5 @@ func main() {
 	}
 
 	r := InitRoutes()
-	r.Logger.Fatal(r.Start(GetRunningAddr()))
+	r.Logger.Fatal(r.Start(controllers.GetRunningAddr()))
 }
