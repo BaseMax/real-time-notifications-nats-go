@@ -1,7 +1,15 @@
 package main
 
+import (
+	"log"
+
+	"github.com/joho/godotenv"
+)
+
 func main() {
-	// Configuration setup
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal("godotenv:", err)
+	}
 
 	// DB setup
 
