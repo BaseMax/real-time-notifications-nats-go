@@ -30,7 +30,7 @@ func Init(externalDb *gorm.DB) error {
 	admin.Password = HashPassword(admin.Password)
 
 	var count int64
-	db.First(&admin).Count(&count)
+	db.Where(&admin).First(&User{}).Count(&count)
 	if count == 1 {
 		return nil
 	}
