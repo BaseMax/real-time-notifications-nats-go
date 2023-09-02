@@ -48,7 +48,7 @@ func FetchUser(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 	user, herr := models.FindById[models.User](uint(id))
-	user.Password = "*"
+	user.Password = ""
 	if herr != nil {
 		return &herr.HttpErr
 	}
