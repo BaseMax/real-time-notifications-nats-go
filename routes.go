@@ -6,6 +6,7 @@ import (
 
 	"github.com/BaseMax/real-time-notifications-nats-go/controllers"
 	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
+	"github.com/BaseMax/real-time-notifications-nats-go/middlewares"
 )
 
 func todo(c echo.Context) error { return nil }
@@ -17,10 +18,10 @@ func InitRoutes() *echo.Echo {
 	e.POST("/register", controllers.Register)
 	e.POST("/login", controllers.Login)
 	g.POST("refresh", controllers.Refresh)
-	g.GET("users/:id", controllers.FetchUser)
-	g.GET("users", controllers.FetchAllUsers)
-	g.DELETE("users/:id", controllers.DeleteUser)
-	g.PUT("users:/id", controllers.EditUser)
+	g.GET("users/:id", controllers.FetchUser, middlewares.IsAdmin)
+	g.GET("users", controllers.FetchAllUsers, middlewares.IsAdmin)
+	g.DELETE("users/:id", controllers.DeleteUser, middlewares.IsAdmin)
+	g.PUT("users:/id", controllers.EditUser, middlewares.IsAdmin)
 
 	g.GET("notifications", todo)
 
