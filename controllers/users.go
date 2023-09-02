@@ -1,8 +1,6 @@
 package controllers
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -15,12 +13,6 @@ import (
 )
 
 var EXPTIME = jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 30))
-
-func hashPassword(pass string) string {
-	hashByte := sha256.Sum256([]byte(pass))
-	hashStr := hex.EncodeToString(hashByte[:])
-	return hashStr
-}
 
 func createJwtToken(id uint, username string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.RegisteredClaims{
@@ -37,7 +29,7 @@ func Register(c echo.Context) error {
 	if err := json.NewDecoder(c.Request().Body).Decode(&user); err != nil {
 		return echo.ErrBadRequest
 	}
-	user.Password = hashPassword(user.Password)
+	user.Password = models.HashPassword(user.Password)
 	if err := models.Create(&user); err != nil {
 		return &err.HttpErr
 	}
@@ -46,7 +38,16 @@ func Register(c echo.Context) error {
 }
 
 func Login(c echo.Context) error {
-	return nil
+	var user models.User
+	if err := json.NewDecoder(c.Request().Body).Decode(&user); err != nil {
+		return echo.ErrBadRequest
+	}
+	user.Password = models.HashPassword(user.Password)
+	if err := models.Login(&user); err != nil {
+		return &err.HttpErr
+	}
+	bearer := createJwtToken(user.ID, user.Username)
+	return c.JSON(http.StatusOK, map[string]any{"bearer": bearer})
 }
 
 func Refresh(c echo.Context) error {
