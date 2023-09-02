@@ -10,6 +10,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+
+	"github.com/BaseMax/real-time-notifications-nats-go/models"
 )
 
 var EXPTIME = jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 30))
@@ -34,12 +36,16 @@ func CreateJwtToken(id uint, username string) string {
 	return bearer
 }
 
-func GetLoggedinInfo(c echo.Context) (uint, string) {
+func GetLoggedinInfo(c echo.Context) models.User {
 	bearer := c.Request().Header.Get("Authorization")
 	token, _, _ := new(jwt.Parser).ParseUnverified(bearer[len("Bearer "):], jwt.MapClaims{})
 	claims := token.Claims.(jwt.MapClaims)
 
 	username := claims["iss"].(string)
 	id, _ := strconv.Atoi(claims["jti"].(string))
-	return uint(id), username
+	return models.User{ID: uint(id), Username: username}
+}
+
+func IsUserAdmin(c echo.Context) bool {
+	return GetLoggedinInfo(c).Username == models.GetAdminConf().Username
 }
