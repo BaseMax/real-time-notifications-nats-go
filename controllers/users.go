@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -20,8 +21,18 @@ func createJwtToken(id uint, username string) string {
 		Issuer:    username,
 		ExpiresAt: EXPTIME,
 	})
-	bearer, _ := token.SignedString([]byte(GetJwtSecret()))
+	bearer, _ := token.SignedString(GetJwtSecret())
 	return bearer
+}
+
+func getLoggedinInfo(c echo.Context) (uint, string) {
+	bearer := c.Request().Header.Get("Authorization")
+	token, _, _ := new(jwt.Parser).ParseUnverified(bearer[len("Bearer "):], jwt.MapClaims{})
+	claims := token.Claims.(jwt.MapClaims)
+
+	username := claims["iss"].(string)
+	id, _ := strconv.Atoi(claims["jti"].(string))
+	return uint(id), username
 }
 
 func Register(c echo.Context) error {
@@ -51,7 +62,8 @@ func Login(c echo.Context) error {
 }
 
 func Refresh(c echo.Context) error {
-	return nil
+	bearer := createJwtToken(getLoggedinInfo(c))
+	return c.JSON(http.StatusOK, map[string]any{"bearer": bearer})
 }
 
 func FetchUser(c echo.Context) error {
