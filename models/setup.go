@@ -16,8 +16,8 @@ func HashPassword(pass string) string {
 	return hashStr
 }
 
-func GetAdminConf() *User {
-	return &User{Username: os.Getenv("ADMIN_USERNAME"), Password: os.Getenv("ADMIN_PASSWORD")}
+func GetAdminConf() User {
+	return User{Username: os.Getenv("ADMIN_USERNAME"), Password: os.Getenv("ADMIN_PASSWORD")}
 }
 
 func Init(externalDb *gorm.DB) error {
@@ -34,5 +34,5 @@ func Init(externalDb *gorm.DB) error {
 	if count == 1 {
 		return nil
 	}
-	return db.Create(admin).Error
+	return db.Create(&admin).Error
 }
