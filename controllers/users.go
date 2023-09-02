@@ -91,5 +91,17 @@ func DeleteUser(c echo.Context) error {
 }
 
 func EditUser(c echo.Context) error {
-	return nil
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	var user models.User
+	if err := json.NewDecoder(c.Request().Body).Decode(&user); err != nil {
+		return echo.ErrBadRequest
+	}
+	user.Password = models.HashPassword(user.Password)
+	if err := models.UpdateById(uint(id), &user); err != nil {
+		return &err.HttpErr
+	}
+	return c.NoContent(http.StatusOK)
 }
