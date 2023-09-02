@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 
@@ -42,15 +43,34 @@ func Refresh(c echo.Context) error {
 }
 
 func FetchUser(c echo.Context) error {
-	
-	return nil
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	user, herr := models.FindById[models.User](uint(id))
+	user.Password = "*"
+	if herr != nil {
+		return &herr.HttpErr
+	}
+	return c.JSON(http.StatusOK, user)
 }
 
 func FetchAllUsers(c echo.Context) error {
-	return nil
+	users, err := models.GetAll[models.User]("id, username")
+	if err != nil {
+		return &err.HttpErr
+	}
+	return c.JSON(http.StatusOK, users)
 }
 
 func DeleteUser(c echo.Context) error {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	if err := models.DeleteById(uint(id), &models.User{}); err != nil {
+		return &err.HttpErr
+	}
 	return nil
 }
 
