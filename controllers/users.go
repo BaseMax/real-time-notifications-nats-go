@@ -9,6 +9,7 @@ import (
 
 	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 )
 
 func Register(c echo.Context) error {
@@ -20,6 +21,20 @@ func Register(c echo.Context) error {
 	if err := models.Create(&user); err != nil {
 		return &err.HttpErr
 	}
+
+	admin, herr := models.GetAdmin()
+	if herr != nil {
+		return &herr.HttpErr
+	}
+	activity := models.Activity{
+		UserID: admin.ID,
+		Title:  user.Username + " registred to system",
+		Action: models.ACTION_REGISTER,
+	}
+	if err := notifications.Notify(activity); err != nil {
+		return &err.HTTPError
+	}
+
 	bearer := helpers.CreateJwtToken(user.ID, user.Username)
 	return c.JSON(http.StatusOK, map[string]any{"bearer": bearer})
 }
@@ -38,7 +53,8 @@ func Login(c echo.Context) error {
 }
 
 func Refresh(c echo.Context) error {
-	bearer := helpers.CreateJwtToken(helpers.GetLoggedinInfo(c))
+	user := helpers.GetLoggedinInfo(c)
+	bearer := helpers.CreateJwtToken(user.ID, user.Username)
 	return c.JSON(http.StatusOK, map[string]any{"bearer": bearer})
 }
 
