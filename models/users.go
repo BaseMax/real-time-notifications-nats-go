@@ -8,11 +8,11 @@ type User struct {
 
 func Login(u *User) *DbErr {
 	r := db.Where(&u).First(&u)
-	return errGetGormToHttp(r)
+	return errGormToHttp(r)
 }
 
 func GetAdmin() (user *User, err *DbErr) {
 	r := db.First(&user, "username = ?", GetAdminConf().Username)
-	err = errGetGormToHttp(r)
+	err = errGormToHttp(r)
 	return
 }
