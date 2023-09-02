@@ -8,6 +8,7 @@ import (
 	"github.com/BaseMax/real-time-notifications-nats-go/controllers"
 	"github.com/BaseMax/real-time-notifications-nats-go/database"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 )
 
 func main() {
@@ -19,13 +20,17 @@ func main() {
 	if err != nil {
 		log.Fatal("readconfig: ", err)
 	}
+
 	conn, err := database.OpenPostgres(c)
 	if err != nil {
 		log.Fatal("open postgres: ", err)
 	}
-
 	if err := models.Init(conn); err != nil {
 		log.Fatal("models init: ", err)
+	}
+
+	if err := notifications.InitNats(); err != nil {
+		log.Fatal(err)
 	}
 
 	r := InitRoutes()
