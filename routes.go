@@ -24,6 +24,8 @@ func InitRoutes() *echo.Echo {
 	g.PUT("users/:id", controllers.EditUser, middlewares.IsAdmin)
 
 	g.GET("notifications", controllers.Notification)
+	g.GET("activities", controllers.FetchRecordedActivities)
+	g.POST("activities/seen", controllers.SeenAllNotifications)
 
 	g.POST("products", todo)
 	g.GET("products/:id", todo)
@@ -31,9 +33,6 @@ func InitRoutes() *echo.Echo {
 	g.GET("products/:order_id", todo)
 	g.PUT("products/:id", todo)
 	g.DELETE("products/:id", todo)
-
-	g.GET("activities", todo)
-	g.POST("activities/seen", todo)
 
 	g.POST("orders", todo)
 	g.GET("orders/:id", todo)
