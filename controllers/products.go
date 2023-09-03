@@ -41,5 +41,5 @@ func EditProduct(c echo.Context) error {
 }
 
 func DeleteProduct(c echo.Context) error {
-	return nil
+	return DeleteModelById[models.Product](c, "id")
 }

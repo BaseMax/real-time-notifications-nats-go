@@ -30,3 +30,15 @@ func GetAllModels[T any](c echo.Context, sel string, con ...any) error {
 	}
 	return c.JSON(http.StatusOK, models)
 }
+
+func DeleteModelById[T any](c echo.Context, idParam string) error {
+	id, err := strconv.Atoi(c.Param(idParam))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	var model T
+	if err := models.DeleteById(uint(id), &model); err != nil {
+		return &err.HttpErr
+	}
+	return c.JSON(http.StatusOK, model)
+}

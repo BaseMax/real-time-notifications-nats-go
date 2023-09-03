@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 
 	"github.com/labstack/echo/v4"
 )
@@ -47,7 +48,7 @@ func GetAll[T any](sel string, con ...any) (models *[]T, e *DbErr) {
 }
 
 func DeleteById(id uint, model any) (e *DbErr) {
-	r := db.Delete(model, id)
+	r := db.Clauses(clause.Returning{}).Delete(model, id)
 	return errGormToHttp(r)
 }
 

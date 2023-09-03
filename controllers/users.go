@@ -76,14 +76,7 @@ func FetchAllUsers(c echo.Context) error {
 }
 
 func DeleteUser(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return echo.ErrBadRequest
-	}
-	if err := models.DeleteById(uint(id), &models.User{}); err != nil {
-		return &err.HttpErr
-	}
-	return nil
+	return DeleteModelById[models.User](c, "id")
 }
 
 func EditUser(c echo.Context) error {
