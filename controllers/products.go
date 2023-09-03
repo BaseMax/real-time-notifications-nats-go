@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -11,12 +10,9 @@ import (
 )
 
 func AddProduct(c echo.Context) error {
-	var product models.Product
-	if err := json.NewDecoder(c.Request().Body).Decode(&product); err != nil {
-		return echo.ErrBadRequest
-	}
-	if err := models.Create(&product); err != nil {
-		return &err.HttpErr
+	product, err := CreateRecordFromModel[models.Product](c)
+	if err != nil {
+		return err
 	}
 	return c.JSON(http.StatusOK, product)
 }

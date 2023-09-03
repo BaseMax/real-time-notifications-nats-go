@@ -22,11 +22,17 @@ func errGormToHttp(row *gorm.DB) *DbErr {
 	err := row.Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return &DbErr{HttpErr: *echo.ErrNotFound, Err: err}
-	} else if errors.Is(err, gorm.ErrDuplicatedKey) {
+	}
+	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return &DbErr{HttpErr: *echo.ErrConflict, Err: err}
-	} else if err != nil {
+	}
+	if errors.Is(err, gorm.ErrForeignKeyViolated) {
+		return &DbErr{HttpErr: *echo.ErrNotFound, Err: err}
+	}
+	if err != nil {
 		return &DbErr{HttpErr: *echo.ErrInternalServerError, Err: err}
-	} else if row.RowsAffected == 0 {
+	}
+	if row.RowsAffected == 0 {
 		return &DbErr{HttpErr: *echo.ErrNotFound, Err: nil}
 	}
 	return nil

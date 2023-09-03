@@ -1,9 +1,27 @@
 package controllers
 
-import "github.com/labstack/echo/v4"
+import (
+	"errors"
+	"net/http"
+
+	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/labstack/echo/v4"
+)
 
 func AddOrder(c echo.Context) error {
-	return nil
+	order, err := CreateRecordFromModel[models.Order](c)
+	// GORM postgres driver doesn't have gorm.ErrForeignKeyViolated translation
+	// I should hack
+	if errors.Is(err, echo.ErrInternalServerError) {
+		return echo.ErrNotFound
+	}
+	if err != nil {
+		return err
+	}
+
+	// Queue order
+
+	return c.JSON(http.StatusOK, order)
 }
 
 func FetchOrder(c echo.Context) error {

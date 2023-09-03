@@ -56,3 +56,14 @@ func DeleteModelById[T any](c echo.Context, idParam string) error {
 	}
 	return c.JSON(http.StatusOK, model)
 }
+
+func CreateRecordFromModel[T any](c echo.Context) (*T, error) {
+	var model T
+	if err := json.NewDecoder(c.Request().Body).Decode(&model); err != nil {
+		return nil, echo.ErrBadRequest
+	}
+	if err := models.Create(&model); err != nil {
+		return nil, &err.HttpErr
+	}
+	return &model, nil
+}
