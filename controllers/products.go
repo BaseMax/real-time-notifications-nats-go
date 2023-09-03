@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/labstack/echo/v4"
+
+	"github.com/BaseMax/real-time-notifications-nats-go/models"
 )
 
 func AddProduct(c echo.Context) error {

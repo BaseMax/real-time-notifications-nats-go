@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -20,7 +19,6 @@ func GetModel[T any](c echo.Context, idParam string) error {
 	if dbErr != nil {
 		return &dbErr.HttpErr
 	}
-	fmt.Println(model)
 	return c.JSON(http.StatusOK, model)
 }
 
