@@ -23,7 +23,7 @@ func InitRoutes() *echo.Echo {
 	g.DELETE("users/:id", controllers.DeleteUser, middlewares.IsAdmin)
 	g.PUT("users/:id", controllers.EditUser, middlewares.IsAdmin)
 
-	g.GET("notifications", todo)
+	g.GET("notifications", controllers.Notification)
 
 	g.POST("products", todo)
 	g.GET("products/:id", todo)
