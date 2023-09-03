@@ -42,12 +42,7 @@ func FindById[T any](id uint) (model *T, e *DbErr) {
 }
 
 func GetAll[T any](sel string) (models *[]T, e *DbErr) {
-	var r *gorm.DB
-	if sel == "" {
-		r = db.Find(&models)
-	} else {
-		r = db.Select(sel).Find(&models)
-	}
+	r := db.Select(sel).Find(&models)
 	return models, errGormToHttp(r)
 }
 

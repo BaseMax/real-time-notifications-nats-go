@@ -21,3 +21,11 @@ func GetModel[T any](c echo.Context, idParam string) error {
 	fmt.Println(model)
 	return c.JSON(http.StatusOK, model)
 }
+
+func GetAllModels[T any](c echo.Context, sel string) error {
+	models, dbErr := models.GetAll[models.Product](sel)
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+	return c.JSON(http.StatusOK, models)
+}

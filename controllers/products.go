@@ -24,7 +24,7 @@ func FetchProduct(c echo.Context) error {
 }
 
 func FetchAllProducts(c echo.Context) error {
-	return nil
+	return GetAllModels[models.Product](c, "*")
 }
 
 func FetchProductsOfUser(c echo.Context) error {
