@@ -27,12 +27,12 @@ func InitRoutes() *echo.Echo {
 	g.GET("activities", controllers.FetchRecordedActivities)
 	g.POST("activities/seen", controllers.SeenAllNotifications)
 
-	g.POST("products", todo)
-	g.GET("products/:id", todo)
-	g.GET("products", todo)
-	g.GET("products/:order_id", todo)
-	g.PUT("products/:id", todo)
-	g.DELETE("products/:id", todo)
+	g.POST("products", controllers.AddProduct)
+	g.GET("products/:id", controllers.FetchProduct)
+	g.GET("products", controllers.FetchAllProducts)
+	g.GET("products/:order_id", controllers.FetchProductsOfUser)
+	g.PUT("products/:id", controllers.EditProduct)
+	g.DELETE("products/:id", controllers.DeleteProduct)
 
 	g.POST("orders", todo)
 	g.GET("orders/:id", todo)
