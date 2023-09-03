@@ -72,11 +72,7 @@ func FetchUser(c echo.Context) error {
 }
 
 func FetchAllUsers(c echo.Context) error {
-	users, err := models.GetAll[models.User]("id, username")
-	if err != nil {
-		return &err.HttpErr
-	}
-	return c.JSON(http.StatusOK, users)
+	return GetAllModels[models.User](c, "id, username")
 }
 
 func DeleteUser(c echo.Context) error {

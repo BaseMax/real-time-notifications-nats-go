@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/labstack/echo/v4"
@@ -28,7 +29,11 @@ func FetchAllProducts(c echo.Context) error {
 }
 
 func FetchProductsOfUser(c echo.Context) error {
-	return nil
+	id, err := strconv.Atoi("order_id")
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	return GetAllModels[models.Product](c, "*", "user_id = ?", id)
 }
 
 func EditProduct(c echo.Context) error {

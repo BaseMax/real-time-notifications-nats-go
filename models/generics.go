@@ -41,8 +41,8 @@ func FindById[T any](id uint) (model *T, e *DbErr) {
 	return model, errGormToHttp(r)
 }
 
-func GetAll[T any](sel string) (models *[]T, e *DbErr) {
-	r := db.Select(sel).Find(&models)
+func GetAll[T any](sel string, con ...any) (models *[]T, e *DbErr) {
+	r := db.Select(sel).Find(&models, con)
 	return models, errGormToHttp(r)
 }
 

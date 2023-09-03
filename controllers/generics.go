@@ -5,8 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/labstack/echo/v4"
+
+	"github.com/BaseMax/real-time-notifications-nats-go/models"
 )
 
 func GetModel[T any](c echo.Context, idParam string) error {
@@ -22,8 +23,8 @@ func GetModel[T any](c echo.Context, idParam string) error {
 	return c.JSON(http.StatusOK, model)
 }
 
-func GetAllModels[T any](c echo.Context, sel string) error {
-	models, dbErr := models.GetAll[models.Product](sel)
+func GetAllModels[T any](c echo.Context, sel string, con ...any) error {
+	models, dbErr := models.GetAll[T](sel, con...)
 	if dbErr != nil {
 		return &dbErr.HttpErr
 	}
