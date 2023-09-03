@@ -30,7 +30,7 @@ func InitRoutes() *echo.Echo {
 	g.POST("products", controllers.AddProduct)
 	g.GET("products/:id", controllers.FetchProduct)
 	g.GET("products", controllers.FetchAllProducts)
-	g.GET("products/:order_id", controllers.FetchProductsOfUser)
+	g.GET("products/:order_id/orders", controllers.FetchProductsOfUser)
 	g.PUT("products/:id", controllers.EditProduct)
 	g.DELETE("products/:id", controllers.DeleteProduct)
 
