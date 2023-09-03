@@ -2,7 +2,6 @@ package notifications
 
 import (
 	"encoding/json"
-	"fmt"
 
 	"github.com/labstack/echo/v4"
 
@@ -14,7 +13,7 @@ func Notify(activity models.Activity) *NotifErr {
 		return &NotifErr{Err: err.Err, HTTPError: err.HttpErr}
 	}
 
-	subject := fmt.Sprintf("notify.%d", activity.UserID)
+	subject := CreateSubject(activity.UserID)
 	data, _ := json.Marshal(activity)
 	if err := conn.Publish(subject, data); err != nil {
 		return &NotifErr{Err: err, HTTPError: *echo.ErrInternalServerError}

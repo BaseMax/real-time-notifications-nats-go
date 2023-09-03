@@ -12,3 +12,7 @@ func InitNats() error {
 	}
 	return nil
 }
+
+func GetConn() *nats.Conn {
+	return conn
+}

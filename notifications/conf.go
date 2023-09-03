@@ -1,6 +1,7 @@
 package notifications
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/labstack/echo/v4"
@@ -22,4 +23,8 @@ func GetNatsURL() string {
 		return nats.DefaultURL
 	}
 	return url
+}
+
+func CreateSubject(id uint) string {
+	return fmt.Sprintf("notify.%d", id)
 }
