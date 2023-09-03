@@ -26,7 +26,7 @@ func errGormToHttp(row *gorm.DB) *DbErr {
 	} else if err != nil {
 		return &DbErr{HttpErr: *echo.ErrInternalServerError, Err: err}
 	} else if row.RowsAffected == 0 {
-		return &DbErr{HttpErr: *echo.ErrNotFound, Err: errors.New("no record affected")}
+		return &DbErr{HttpErr: *echo.ErrNotFound, Err: nil}
 	}
 	return nil
 }

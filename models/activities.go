@@ -17,3 +17,13 @@ type Activity struct {
 	Title  string `gorm:"not null" json:"title"`
 	Action string `gorm:"not null" json:"action"`
 }
+
+func GetActivitiesByUserId(id uint) (actitivies *[]Activity, herr *DbErr) {
+	err := db.Find(&actitivies, "user_id = ?", id)
+	return actitivies, errGormToHttp(err)
+}
+
+func SeenActivities(id uint) *DbErr {
+	err := db.Delete(&Activity{}, "user_id = ?", id)
+	return errGormToHttp(err)
+}
