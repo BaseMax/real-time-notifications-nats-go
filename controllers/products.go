@@ -37,7 +37,7 @@ func FetchProductsOfUser(c echo.Context) error {
 }
 
 func EditProduct(c echo.Context) error {
-	return nil
+	return EditModelById[models.Product](c, "id")
 }
 
 func DeleteProduct(c echo.Context) error {

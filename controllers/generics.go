@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -29,6 +30,21 @@ func GetAllModels[T any](c echo.Context, sel string, con ...any) error {
 		return &dbErr.HttpErr
 	}
 	return c.JSON(http.StatusOK, models)
+}
+
+func EditModelById[T any](c echo.Context, idParam string) error {
+	var model T
+	id, err := strconv.Atoi(c.Param(idParam))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	if err := json.NewDecoder(c.Request().Body).Decode(&model); err != nil {
+		return echo.ErrBadRequest
+	}
+	if err := models.UpdateById(uint(id), &model); err != nil {
+		return &err.HttpErr
+	}
+	return c.NoContent(http.StatusOK)
 }
 
 func DeleteModelById[T any](c echo.Context, idParam string) error {
