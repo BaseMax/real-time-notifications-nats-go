@@ -9,6 +9,7 @@ import (
 	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
+	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
 	"github.com/labstack/echo/v4"
 )
 
@@ -38,7 +39,14 @@ func AddOrder(c echo.Context) error {
 		return &err.HTTPError
 	}
 
-	// Queue order
+	if rabbitmq.IsClosed() {
+		if rabbitmq.Connect() != nil {
+			return echo.ErrInternalServerError
+		}
+	}
+	if err := rabbitmq.EnqueueTask(order, rabbitmq.QUEUE_NAME_ORDERS); err != nil {
+		return err
+	}
 
 	return c.JSON(http.StatusOK, order)
 }

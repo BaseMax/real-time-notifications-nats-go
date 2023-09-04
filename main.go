@@ -9,6 +9,7 @@ import (
 	"github.com/BaseMax/real-time-notifications-nats-go/database"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
+	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
 )
 
 func main() {
@@ -30,6 +31,10 @@ func main() {
 	}
 
 	if err := notifications.InitNats(); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rabbitmq.Connect(); err != nil {
 		log.Fatal(err)
 	}
 
