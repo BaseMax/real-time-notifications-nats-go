@@ -20,6 +20,12 @@ func AddOrder(c echo.Context) error {
 		return err
 	}
 
+	if err := models.ReserveProducts(order.ID, order.ProductIDs); err != nil {
+		return &err.HttpErr
+	}
+
+	// Notify Admin
+
 	// Queue order
 
 	return c.JSON(http.StatusOK, order)
