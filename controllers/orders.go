@@ -2,10 +2,13 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 	"github.com/labstack/echo/v4"
 )
 
@@ -20,7 +23,20 @@ func AddOrder(c echo.Context) error {
 		return err
 	}
 
-	// Notify Admin
+	user := helpers.GetLoggedinInfo(c)
+	admin, dbErr := models.GetAdmin()
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+
+	activities := models.Activity{
+		UserID: admin.ID,
+		Title:  fmt.Sprintf("We have new order from %s with order_id=%d", user.Username, order.ID),
+		Action: models.ACTION_NEW_ORDER,
+	}
+	if err := notifications.Notify(activities); err != nil {
+		return &err.HTTPError
+	}
 
 	// Queue order
 
