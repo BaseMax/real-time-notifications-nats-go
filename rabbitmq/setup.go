@@ -31,7 +31,7 @@ func IsClosed() bool {
 }
 
 func RestartChannel() (err error) {
-	if conn == nil {
+	if IsClosed() {
 		if err = Connect(); err != nil {
 			return
 		}

@@ -48,6 +48,11 @@ func FindById[T any](id uint) (model *T, e *DbErr) {
 	return model, errGormToHttp(r)
 }
 
+func FindByIdPreload[T any](id uint, preload string) (model *T, e *DbErr) {
+	r := db.Preload(preload).First(&model, id)
+	return model, errGormToHttp(r)
+}
+
 func GetAll[T any](sel string, con ...any) (models *[]T, e *DbErr) {
 	r := db.Select(sel).Find(&models, con)
 	return models, errGormToHttp(r)
@@ -60,5 +65,11 @@ func DeleteById(id uint, model any) (e *DbErr) {
 
 func UpdateById[T any](id uint, model *T) (e *DbErr) {
 	r := db.Where(id).Updates(model)
+	return errGormToHttp(r)
+}
+
+func UpdateStatus[T any](id uint, status string) (e *DbErr) {
+	var m T
+	r := db.Model(&m).Where(id).Update("status", status)
 	return errGormToHttp(r)
 }

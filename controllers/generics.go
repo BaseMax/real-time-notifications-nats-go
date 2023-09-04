@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
 )
 
 func GetModel[T any](c echo.Context, idParam string) error {
@@ -66,4 +67,20 @@ func CreateRecordFromModel[T any](c echo.Context) (*T, error) {
 		return nil, &err.HttpErr
 	}
 	return &model, nil
+}
+
+func ProcessFirstQueuedOrder[T any](c echo.Context, queueName string, newStatus, preload string) error {
+	if rabbitmq.RestartChannel() != nil {
+		return echo.ErrInternalServerError
+	}
+
+	model, err := rabbitmq.ProcessFirstTask[T](queueName, newStatus, preload)
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	if model == nil {
+		return echo.ErrNotFound
+	}
+
+	return c.JSON(http.StatusOK, model)
 }

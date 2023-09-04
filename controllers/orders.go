@@ -39,10 +39,8 @@ func AddOrder(c echo.Context) error {
 		return &err.HTTPError
 	}
 
-	if rabbitmq.IsClosed() {
-		if rabbitmq.Connect() != nil {
-			return echo.ErrInternalServerError
-		}
+	if rabbitmq.RestartChannel() != nil {
+		return echo.ErrInternalServerError
 	}
 	if err := rabbitmq.EnqueueTask(order, rabbitmq.QUEUE_NAME_ORDERS); err != nil {
 		return err
@@ -104,13 +102,13 @@ func CancelOrder(c echo.Context) error {
 }
 
 func GetFirstQueuedOrder(c echo.Context) error {
-	return nil
+	return ProcessFirstQueuedOrder[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_BROWSE, "Products")
 }
 
 func DoneFirstQueuedOrder(c echo.Context) error {
-	return nil
+	return ProcessFirstQueuedOrder[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_DONE, "Products")
 }
 
 func CancelFirstQueuedOrder(c echo.Context) error {
-	return nil
+	return ProcessFirstQueuedOrder[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_CANCELED, "Products")
 }

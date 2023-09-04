@@ -10,6 +10,11 @@ import (
 
 var db *gorm.DB
 
+type Task interface {
+	GetID() uint
+	GetStatus() string
+}
+
 func HashPassword(pass string) string {
 	hashByte := sha256.Sum256([]byte(pass))
 	hashStr := hex.EncodeToString(hashByte[:])
