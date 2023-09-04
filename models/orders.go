@@ -1,9 +1,19 @@
 package models
 
 type Order struct {
-	ID         uint   `gorm:"primaryKey" json:"id"`
-	User       User   `json:"-"`
-	UserID     uint   `gorm:"not null" json:"user_id"`
-	Status     string `gorm:"default:IN-PROGRESS" json:"status"`
-	ProductIDs []uint `gorm:"-" json:"product_ids,omitempty"`
+	ID       uint      `gorm:"primaryKey" json:"id"`
+	User     User      `json:"-"`
+	UserID   uint      `gorm:"not null" json:"user_id"`
+	Status   string    `gorm:"default:IN-PROGRESS" json:"status"`
+	Products []Product `gorm:"many2many:order_products" json:"products,omitempty"`
+}
+
+func FetchOrder(id uint) (order *Order, err *DbErr) {
+	r := db.Preload("Products").First(&order, id)
+	return order, errGormToHttp(r)
+}
+
+func FetchAllOrders() (orders *[]Order, err *DbErr) {
+	r := db.Preload("Products").Find(&orders)
+	return orders, errGormToHttp(r)
 }

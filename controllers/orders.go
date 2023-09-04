@@ -20,10 +20,6 @@ func AddOrder(c echo.Context) error {
 		return err
 	}
 
-	if err := models.ReserveProducts(order.ID, order.ProductIDs); err != nil {
-		return &err.HttpErr
-	}
-
 	// Notify Admin
 
 	// Queue order
@@ -32,11 +28,23 @@ func AddOrder(c echo.Context) error {
 }
 
 func FetchOrder(c echo.Context) error {
-	return GetModel[models.Order](c, "id")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	order, dbErr := models.FetchOrder(uint(id))
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+	return c.JSON(http.StatusOK, order)
 }
 
 func FetchAllOrders(c echo.Context) error {
-	return GetAllModels[models.Order](c, "*")
+	orders, err := models.FetchAllOrders()
+	if err != nil {
+		return &err.HttpErr
+	}
+	return c.JSON(http.StatusOK, orders)
 }
 
 func EditOrder(c echo.Context) error {
