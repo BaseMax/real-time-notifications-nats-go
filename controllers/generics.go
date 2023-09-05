@@ -8,7 +8,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
@@ -105,13 +104,7 @@ func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, 
 		return echo.ErrNotFound
 	}
 
-	user := helpers.GetLoggedinInfo(c)
-	admin, dbErr := models.GetAdmin()
-	if dbErr != nil {
-		return &dbErr.HttpErr
-	}
-
-	if newStatus == models.TASK_BROWSE || user.ID == admin.ID {
+	if newStatus == models.TASK_BROWSE {
 		return c.JSON(http.StatusOK, model)
 	}
 
@@ -127,7 +120,7 @@ func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, 
 	activities := models.Activity{
 		UserID: task.GetOwnerID(),
 		Title:  title,
-		Action: models.ACTION_NEW_ORDER,
+		Action: newStatus,
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError
