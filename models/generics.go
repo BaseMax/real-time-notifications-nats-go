@@ -58,6 +58,11 @@ func GetAll[T any](sel string, con ...any) (models *[]T, e *DbErr) {
 	return models, errGormToHttp(r)
 }
 
+func GetAllPreload[T any](sel, preload string, con ...any) (models *[]T, e *DbErr) {
+	r := db.Preload(preload).Select(sel).Find(&models, con)
+	return models, errGormToHttp(r)
+}
+
 func DeleteById(id uint, model any) (e *DbErr) {
 	r := db.Clauses(clause.Returning{}).Delete(model, id)
 	return errGormToHttp(r)

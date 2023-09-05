@@ -23,12 +23,32 @@ func GetModel[T any](c echo.Context, idParam string) error {
 	return c.JSON(http.StatusOK, model)
 }
 
+func GetModelByPreload[T any](c echo.Context, idParam, preload string) error {
+	id, err := strconv.Atoi(c.Param(idParam))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	model, dbErr := models.FindByIdPreload[T](uint(id), preload)
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+	return c.JSON(http.StatusOK, model)
+}
+
 func GetAllModels[T any](c echo.Context, sel string, con ...any) error {
 	models, dbErr := models.GetAll[T](sel, con...)
 	if dbErr != nil {
 		return &dbErr.HttpErr
 	}
 	return c.JSON(http.StatusOK, models)
+}
+
+func GetAllModelsByPreload[T any](c echo.Context, sel, preload string, cond ...any) error {
+	allModels, err := models.GetAllPreload[T](sel, preload, cond...)
+	if err != nil {
+		return &err.HttpErr
+	}
+	return c.JSON(http.StatusOK, allModels)
 }
 
 func EditModelById[T any](c echo.Context, idParam string) error {
@@ -69,7 +89,7 @@ func CreateRecordFromModel[T any](c echo.Context) (*T, error) {
 	return &model, nil
 }
 
-func ProcessFirstQueuedOrder[T any](c echo.Context, queueName string, newStatus, preload string) error {
+func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, preload string) error {
 	if rabbitmq.RestartChannel() != nil {
 		return echo.ErrInternalServerError
 	}
