@@ -9,6 +9,12 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type Task interface {
+	GetID() uint
+	GetStatus() string
+	GetOwnerID() uint
+}
+
 type DbErr struct {
 	HttpErr echo.HTTPError
 	Err     error
@@ -77,4 +83,8 @@ func UpdateStatus[T any](id uint, status string) (e *DbErr) {
 	var m T
 	r := db.Model(&m).Where(id).Update("status", status)
 	return errGormToHttp(r)
+}
+
+func AnyToTask(model any) Task {
+	return model.(Task)
 }

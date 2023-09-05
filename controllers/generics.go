@@ -2,12 +2,15 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
 
+	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
 )
 
@@ -100,6 +103,34 @@ func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, 
 	}
 	if model == nil {
 		return echo.ErrNotFound
+	}
+
+	user := helpers.GetLoggedinInfo(c)
+	admin, dbErr := models.GetAdmin()
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+
+	if newStatus == models.TASK_BROWSE || user.ID == admin.ID {
+		return c.JSON(http.StatusOK, model)
+	}
+
+	var title string
+
+	task := models.AnyToTask(model)
+	if newStatus == models.TASK_CANCELED {
+		title = fmt.Sprintf("Your task was cenceled by admin with task_id=%d", task.GetID())
+	} else if newStatus == models.TASK_DONE {
+		title = fmt.Sprintf("Your task was completed by admin with task_id=%d", task.GetID())
+	}
+
+	activities := models.Activity{
+		UserID: task.GetOwnerID(),
+		Title:  title,
+		Action: models.ACTION_NEW_ORDER,
+	}
+	if err := notifications.Notify(activities); err != nil {
+		return &err.HTTPError
 	}
 
 	return c.JSON(http.StatusOK, model)

@@ -16,6 +16,10 @@ func (o Order) GetStatus() string {
 	return o.Status
 }
 
+func (o Order) GetOwnerID() uint {
+	return o.UserID
+}
+
 func FetchOrder(id uint) (order *Order, err *DbErr) {
 	r := db.Preload("Products").First(&order, id)
 	return order, errGormToHttp(r)
