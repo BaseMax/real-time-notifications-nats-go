@@ -20,6 +20,15 @@ func AddRefund(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
+	order, dbErr := models.FindById[models.Order](uint(id))
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+
+	if order.Status != models.TASK_DONE {
+		return echo.ErrNotAcceptable
+	}
+
 	refund := models.Refund{OrderID: uint(id)}
 	if err := models.Create(&refund); err != nil {
 		// GORM postgres driver doesn't have gorm.ErrForeignKeyViolated translation
