@@ -9,8 +9,6 @@ import (
 	"github.com/BaseMax/real-time-notifications-nats-go/middlewares"
 )
 
-func todo(c echo.Context) error { return nil }
-
 func InitRoutes() *echo.Echo {
 	e := echo.New()
 	g := e.Group("/", echojwt.WithConfig(echojwt.Config{SigningKey: helpers.GetJwtSecret()}))

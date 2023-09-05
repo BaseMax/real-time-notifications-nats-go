@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/labstack/echo/v4"
+
 	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
-	"github.com/labstack/echo/v4"
 )
 
 func AddOrder(c echo.Context) error {
