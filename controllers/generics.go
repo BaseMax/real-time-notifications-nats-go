@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 
@@ -108,19 +109,14 @@ func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, 
 		return c.JSON(http.StatusOK, model)
 	}
 
-	var title string
-
 	task := models.AnyToTask(model)
-	if newStatus == models.TASK_CANCELED {
-		title = fmt.Sprintf("Your task was cenceled by admin with task_id=%d", task.GetID())
-	} else if newStatus == models.TASK_DONE {
-		title = fmt.Sprintf("Your task was completed by admin with task_id=%d", task.GetID())
-	}
+	title := fmt.Sprintf("Your %s was %s by admin.", task.GetName(), strings.ToLower(newStatus))
 
 	activities := models.Activity{
-		UserID: task.GetOwnerID(),
-		Title:  title,
-		Action: newStatus,
+		RecieverID: task.GetOwnerID(),
+		Title:      title,
+		TaskID:     task.GetID(),
+		Action:     newStatus,
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError

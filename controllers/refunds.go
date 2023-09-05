@@ -37,9 +37,10 @@ func AddRefund(c echo.Context) error {
 	}
 
 	activities := models.Activity{
-		UserID: admin.ID,
-		Title:  fmt.Sprintf("We have new refund from %s with refund_id=%d", user.Username, refund.ID),
-		Action: models.ACTION_NEW_RECORD,
+		RecieverID: admin.ID,
+		Title:      fmt.Sprintf("We have new refund from %s.", user.Username),
+		Action:     models.ACTION_NEW_RECORD,
+		TaskID:     refund.ID,
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError

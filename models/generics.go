@@ -13,6 +13,7 @@ type Task interface {
 	GetID() uint
 	GetStatus() string
 	GetOwnerID() uint
+	GetName() string
 }
 
 type DbErr struct {

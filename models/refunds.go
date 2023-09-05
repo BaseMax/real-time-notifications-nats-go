@@ -18,3 +18,7 @@ func (r Refund) GetStatus() string {
 func (r Refund) GetOwnerID() uint {
 	return r.Order.UserID
 }
+
+func (Refund) GetName() string {
+	return "refund"
+}

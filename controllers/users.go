@@ -27,9 +27,10 @@ func Register(c echo.Context) error {
 		return &herr.HttpErr
 	}
 	activity := models.Activity{
-		UserID: admin.ID,
-		Title:  user.Username + " registred to system",
-		Action: models.ACTION_REGISTER,
+		RecieverID: admin.ID,
+		Title:      user.Username + " registred to system",
+		Action:     models.ACTION_REGISTER,
+		TaskID:     user.ID,
 	}
 	if err := notifications.Notify(activity); err != nil {
 		return &err.HTTPError
