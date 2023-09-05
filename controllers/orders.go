@@ -34,7 +34,7 @@ func AddOrder(c echo.Context) error {
 	activities := models.Activity{
 		UserID: admin.ID,
 		Title:  fmt.Sprintf("We have new order from %s with order_id=%d", user.Username, order.ID),
-		Action: models.ACTION_NEW_ORDER,
+		Action: models.ACTION_NEW_RECORD,
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError
