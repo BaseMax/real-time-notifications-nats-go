@@ -115,8 +115,8 @@ func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, 
 	activities := models.Activity{
 		RecieverID: task.GetOwnerID(),
 		Title:      title,
-		TaskID:     task.GetID(),
 		Action:     newStatus,
+		Task:       task,
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError

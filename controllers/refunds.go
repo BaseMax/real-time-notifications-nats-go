@@ -40,7 +40,7 @@ func AddRefund(c echo.Context) error {
 		RecieverID: admin.ID,
 		Title:      fmt.Sprintf("We have new refund from %s.", user.Username),
 		Action:     models.ACTION_NEW_RECORD,
-		TaskID:     refund.ID,
+		Task:       models.AnyToTask(refund),
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError

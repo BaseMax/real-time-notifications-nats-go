@@ -30,7 +30,7 @@ func Register(c echo.Context) error {
 		RecieverID: admin.ID,
 		Title:      user.Username + " registred to system",
 		Action:     models.ACTION_REGISTER,
-		TaskID:     user.ID,
+		Task:       models.AnyToTask(models.User{ID: user.ID, Username: user.Username}),
 	}
 	if err := notifications.Notify(activity); err != nil {
 		return &err.HTTPError

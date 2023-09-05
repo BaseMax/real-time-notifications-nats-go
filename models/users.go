@@ -6,6 +6,22 @@ type User struct {
 	Password string `gorm:"not null" json:"password,omitempty"`
 }
 
+func (o User) GetID() uint {
+	return o.ID
+}
+
+func (o User) GetStatus() string {
+	return ""
+}
+
+func (o User) GetOwnerID() uint {
+	return o.ID
+}
+
+func (User) GetName() string {
+	return "user"
+}
+
 func Login(u *User) *DbErr {
 	r := db.Where(&u).First(&u)
 	return errGormToHttp(r)

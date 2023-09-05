@@ -35,7 +35,7 @@ func AddOrder(c echo.Context) error {
 		RecieverID: admin.ID,
 		Title:      fmt.Sprintf("We have new order from %s.", user.Username),
 		Action:     models.ACTION_NEW_RECORD,
-		TaskID:     order.ID,
+		Task:       models.AnyToTask(order),
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError

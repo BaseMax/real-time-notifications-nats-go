@@ -13,9 +13,10 @@ const (
 type Activity struct {
 	ID         uint   `gorm:"primaryKey" json:"id"`
 	RecieverID uint   `gorm:"not null" json:"user_id"`
-	TaskID     uint   `gorm:"not null" json:"task_id"`
 	Title      string `gorm:"not null" json:"title"`
 	Action     string `gorm:"not null" json:"action"`
+
+	Task Task `gorm:"-" json:"task"`
 }
 
 func GetActivitiesByUserId(id uint) (actitivies *[]Activity, herr *DbErr) {
