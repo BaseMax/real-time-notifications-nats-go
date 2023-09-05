@@ -9,8 +9,6 @@ import (
 	"github.com/BaseMax/real-time-notifications-nats-go/middlewares"
 )
 
-func todo(c echo.Context) error { return nil }
-
 func InitRoutes() *echo.Echo {
 	e := echo.New()
 	g := e.Group("/", echojwt.WithConfig(echojwt.Config{SigningKey: helpers.GetJwtSecret()}))
@@ -45,16 +43,16 @@ func InitRoutes() *echo.Echo {
 	g.POST("orders/first/done", controllers.DoneFirstQueuedOrder, middlewares.IsAdmin)
 	g.POST("orders/first/cancel", controllers.CancelFirstQueuedOrder, middlewares.IsAdmin)
 
-	g.POST("refunds/:order_id", todo)
-	g.GET("refunds/:id", todo)
-	g.GET("refunds", todo)
-	g.PUT("refunds/:id", todo)
-	g.DELETE("refunds/:id", todo)
-	g.GET("refunds/:id/status", todo)
-	g.POST("refunds/:id/cancel", todo)
-	g.GET("refunds/first", todo)
-	g.POST("refunds/first/done", todo)
-	g.POST("refunds/first/cancel", todo)
+	g.POST("refunds/:order_id", controllers.AddRefund)
+	g.GET("refunds/:id", controllers.FetchRefund)
+	g.GET("refunds", controllers.FetchAllRefunds)
+	g.PUT("refunds/:id", controllers.EditRefund)
+	g.DELETE("refunds/:id", controllers.DeleteRefund)
+	g.GET("refunds/:id/status", controllers.FetchRefundStatus)
+	g.POST("refunds/:id/cancel", controllers.CancelRefund)
+	g.GET("refunds/first", controllers.GetFirstQueuedRefund)
+	g.POST("refunds/first/done", controllers.DoneFirstQueuedRefund)
+	g.POST("refunds/first/cancel", controllers.CancelFirstQueuedRefund)
 
 	return e
 }

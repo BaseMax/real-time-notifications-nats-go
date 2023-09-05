@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/labstack/echo/v4"
+
 	"github.com/BaseMax/real-time-notifications-nats-go/helpers"
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
 	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
-	"github.com/labstack/echo/v4"
 )
 
 func AddOrder(c echo.Context) error {
@@ -50,23 +51,11 @@ func AddOrder(c echo.Context) error {
 }
 
 func FetchOrder(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return echo.ErrBadRequest
-	}
-	order, dbErr := models.FetchOrder(uint(id))
-	if dbErr != nil {
-		return &dbErr.HttpErr
-	}
-	return c.JSON(http.StatusOK, order)
+	return GetModelByPreload[models.Order](c, "id", "Products")
 }
 
 func FetchAllOrders(c echo.Context) error {
-	orders, err := models.FetchAllOrders()
-	if err != nil {
-		return &err.HttpErr
-	}
-	return c.JSON(http.StatusOK, orders)
+	return GetAllModelsByPreload[models.Order](c, "*", "Products")
 }
 
 func EditOrder(c echo.Context) error {
@@ -102,13 +91,13 @@ func CancelOrder(c echo.Context) error {
 }
 
 func GetFirstQueuedOrder(c echo.Context) error {
-	return ProcessFirstQueuedOrder[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_BROWSE, "Products")
+	return ProcessFirstQueuedTask[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_BROWSE, "Products")
 }
 
 func DoneFirstQueuedOrder(c echo.Context) error {
-	return ProcessFirstQueuedOrder[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_DONE, "Products")
+	return ProcessFirstQueuedTask[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_DONE, "Products")
 }
 
 func CancelFirstQueuedOrder(c echo.Context) error {
-	return ProcessFirstQueuedOrder[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_CANCELED, "Products")
+	return ProcessFirstQueuedTask[models.Order](c, rabbitmq.QUEUE_NAME_ORDERS, models.TASK_CANCELED, "Products")
 }
