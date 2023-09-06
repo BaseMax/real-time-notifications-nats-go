@@ -55,6 +55,44 @@ Contributions to this repository are encouraged! To contribute, please follow th
 - Push your branch to your forked repository.
 - Create a pull request from your branch to the main branch of this repository.
 
+## Endpoints
+
+| Endpoint | Method | Postman |
+| --- | ---- | ---- |
+| /register | POST | ![Register](./screenshots/register.png) |
+| /login | POST | ![login](./screenshots/login.png) |
+| /refresh | POST | ![refresh](./screenshots/refresh.png) |
+| /users/:id | GET | ![get user](./screenshots/get_user.png) |
+| /users | GET | ![get all users](./screenshots/get_all_users.png) |
+| /users/:id | DELETE | ![delete user](./screenshots/delete_user.png) |
+| /users/:id | PUT | ![update user](./screenshots/update_user.png) |
+| /notifications | raw | ![notification websocket](./screenshots/websocket_notifications.png) |
+| /activities | GET | ![get stored notifications](./screenshots/get_all_activities.png) |
+| /activities/seen | POST | ![delete stored notifications of a user](./screenshots/seen_notifications.png) |
+| /products | POST | ![create new product](./screenshots/add_product.png) |
+| /products/:id | GET | ![get a product](./screenshots/get_a_product.png) |
+| /products | GET | ![get all products](./screenshots/get_all_products.png) |
+| /products/:id | PUT | ![edit product](./screenshots/update_product.png) |
+| /products/:id | DELETE | ![delete product](./screenshots/delete_product.png) |
+| /orders | POST | ![create new order](./screenshots/add_order.png) |
+| /orders/:id | GET | ![get an order](./screenshots/get_order.png) |
+| /orders | GET | ![get all orders](./screenshots/get_all_orders.png) |
+| /orders/:id | DELETE | ![delte orders](./screenshots/delete_order.png) |
+| /orders/:id/status | GET | ![get order status](./screenshots/get_order_status.png) |
+| /orders/first | GET | ![get first order](./screenshots/browse_first_order.png) |
+| /orders/first/done | POST | ![done first order](./screenshots/complete_first_order.png) |
+| /orders/first/cancel | POST | ![cancel first order](./screenshots/cancel_first_order.png) |
+| /refunds/:order_id | POST | ![create new refund](./screenshots/add_refund.png) |
+| /refunds/:id | GET | ![get refund](./screenshots/get_refund.png) |
+| /refunds | GET | ![get all refunds](./screenshots/get_all_refunds.png) |
+| /refunds/:id | DELETE | ![delete refund](./screenshots/delete_refund.png) |
+| /refunds/:id/statys | GET | ![get refund status](./screenshots/get_refund_status.png) |
+| /refunds/:id/cancel | POST | ![cancel refund](./screenshots/cancel_refund.png) |
+| /refunds/first | GET | ![get first refund](./screenshots/browse_first_refund.png) |
+| /refunds/first/done | POST | ![done first refund](./screenshots/doen_first_refund.png) |
+| /refunds/first/cancel | POST | ![cancel first refund](./screenshots/cancel_first_refund.png) |
+
+
 ## Database and Schema Design
 
 In the Real-time Notifications with NATS and Go project, the database and schema play a vital role in managing user activities, events, and preferences. An effective schema design ensures efficient data storage and retrieval, while accommodating the requirements of real-time notifications.
@@ -62,31 +100,6 @@ In the Real-time Notifications with NATS and Go project, the database and schema
 ### Database Technology
 
 For this project, we'll use a relational database to store user activities and event data. PostgreSQL, a powerful open-source relational database system, can be an excellent choice due to its robust features and support for complex queries.
-
-### Schema Components
-
-Users Table: Store user information such as user ID, username, email, and preferences for event subscriptions. This table will help manage the preferences of each user.
-
-```sql
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    subscription_preferences JSONB
-);
-```
-
-Activities Table: Record user activities as events, including details such as the event type, timestamp, and user ID. This table serves as an event log.
-
-```sql
-CREATE TABLE activities (
-    id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
-    event_type VARCHAR(255) NOT NULL,
-    event_data JSONB,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
 
 ### Event Data
 
