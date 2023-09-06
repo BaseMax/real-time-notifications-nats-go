@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -15,14 +16,18 @@ import (
 )
 
 func AddOrder(c echo.Context) error {
-	order, err := CreateRecordFromModel[models.Order](c)
-	// GORM postgres driver doesn't have gorm.ErrForeignKeyViolated translation
-	// I should hack
-	if errors.Is(err, echo.ErrInternalServerError) {
-		return echo.ErrNotFound
+	var order models.Order
+	if err := json.NewDecoder(c.Request().Body).Decode(&order); err != nil {
+		return echo.ErrBadRequest
 	}
-	if err != nil {
-		return err
+	order.UserID = helpers.GetLoggedinInfo(c).ID
+	if err := models.Create(&order); err != nil {
+		// GORM postgres driver doesn't have gorm.ErrForeignKeyViolated translation
+		// I should hack
+		if errors.Is(err, echo.ErrInternalServerError) {
+			return echo.ErrNotFound
+		}
+		return &err.HttpErr
 	}
 
 	user := helpers.GetLoggedinInfo(c)
