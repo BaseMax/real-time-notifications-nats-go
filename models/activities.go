@@ -16,7 +16,7 @@ type Activity struct {
 	Title      string `gorm:"not null" json:"title"`
 	Action     string `gorm:"not null" json:"action"`
 
-	Task Task `gorm:"-" json:"task"`
+	Task Task `gorm:"-" json:"task,omitempty"`
 }
 
 func GetActivitiesByUserId(id uint) (actitivies *[]Activity, herr *DbErr) {
