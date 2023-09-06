@@ -64,7 +64,15 @@ func EditOrder(c echo.Context) error {
 }
 
 func DeleteOrder(c echo.Context) error {
-	return DeleteModelById[models.Order](c, "id")
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return echo.ErrBadRequest
+	}
+	order := models.Order{ID: uint(id)}
+	if err := models.Delete(&order); err != nil {
+		return &err.HttpErr
+	}
+	return c.JSON(http.StatusOK, &order)
 }
 
 func FetchOrderStatus(c echo.Context) error {

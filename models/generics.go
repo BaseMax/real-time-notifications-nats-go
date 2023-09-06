@@ -75,6 +75,11 @@ func DeleteById(id uint, model any) (e *DbErr) {
 	return errGormToHttp(r)
 }
 
+func Delete(model any) (e *DbErr) {
+	r := db.Clauses(clause.Returning{}).Select(clause.Associations).Delete(model)
+	return errGormToHttp(r)
+}
+
 func UpdateById[T any](id uint, model *T) (e *DbErr) {
 	r := db.Where(id).Updates(model)
 	return errGormToHttp(r)

@@ -37,6 +37,7 @@ services:
       dockerfile: Dockerfile
     container_name: ${APP_NAME}
     hostname: ${APP_NAME}
+    restart: always
     ports:
       - ${RUNNING_PORT}:${RUNNING_PORT}
     depends_on:
