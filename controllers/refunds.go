@@ -20,6 +20,15 @@ func AddRefund(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
+	order, dbErr := models.FindById[models.Order](uint(id))
+	if dbErr != nil {
+		return &dbErr.HttpErr
+	}
+
+	if order.Status != models.TASK_DONE {
+		return echo.ErrNotAcceptable
+	}
+
 	refund := models.Refund{OrderID: uint(id)}
 	if err := models.Create(&refund); err != nil {
 		// GORM postgres driver doesn't have gorm.ErrForeignKeyViolated translation
@@ -37,9 +46,10 @@ func AddRefund(c echo.Context) error {
 	}
 
 	activities := models.Activity{
-		UserID: admin.ID,
-		Title:  fmt.Sprintf("We have new refund from %s with refund_id=%d", user.Username, refund.ID),
-		Action: models.ACTION_NEW_ORDER,
+		RecieverID: admin.ID,
+		Title:      fmt.Sprintf("We have new refund from %s.", user.Username),
+		Action:     models.ACTION_NEW_RECORD,
+		Task:       models.AnyToTask(refund),
 	}
 	if err := notifications.Notify(activities); err != nil {
 		return &err.HTTPError

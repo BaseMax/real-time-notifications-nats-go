@@ -2,12 +2,15 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 
 	"github.com/BaseMax/real-time-notifications-nats-go/models"
+	"github.com/BaseMax/real-time-notifications-nats-go/notifications"
 	"github.com/BaseMax/real-time-notifications-nats-go/rabbitmq"
 )
 
@@ -100,6 +103,23 @@ func ProcessFirstQueuedTask[T any](c echo.Context, queueName string, newStatus, 
 	}
 	if model == nil {
 		return echo.ErrNotFound
+	}
+
+	if newStatus == models.TASK_BROWSE {
+		return c.JSON(http.StatusOK, model)
+	}
+
+	task := models.AnyToTask(model)
+	title := fmt.Sprintf("Your %s was %s by admin.", task.GetName(), strings.ToLower(newStatus))
+
+	activities := models.Activity{
+		RecieverID: task.GetOwnerID(),
+		Title:      title,
+		Action:     newStatus,
+		Task:       task,
+	}
+	if err := notifications.Notify(activities); err != nil {
+		return &err.HTTPError
 	}
 
 	return c.JSON(http.StatusOK, model)

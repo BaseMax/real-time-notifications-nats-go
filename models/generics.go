@@ -9,6 +9,13 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type Task interface {
+	GetID() uint
+	GetStatus() string
+	GetOwnerID() uint
+	GetName() string
+}
+
 type DbErr struct {
 	HttpErr echo.HTTPError
 	Err     error
@@ -68,6 +75,11 @@ func DeleteById(id uint, model any) (e *DbErr) {
 	return errGormToHttp(r)
 }
 
+func Delete(model any) (e *DbErr) {
+	r := db.Clauses(clause.Returning{}).Select(clause.Associations).Delete(model)
+	return errGormToHttp(r)
+}
+
 func UpdateById[T any](id uint, model *T) (e *DbErr) {
 	r := db.Where(id).Updates(model)
 	return errGormToHttp(r)
@@ -77,4 +89,8 @@ func UpdateStatus[T any](id uint, status string) (e *DbErr) {
 	var m T
 	r := db.Model(&m).Where(id).Update("status", status)
 	return errGormToHttp(r)
+}
+
+func AnyToTask(model any) Task {
+	return model.(Task)
 }

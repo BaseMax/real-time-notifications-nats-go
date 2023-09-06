@@ -6,25 +6,25 @@ const (
 	TASK_CANCELED   = "CANCELED"
 	TASK_BROWSE     = "BROWSE"
 
-	ACTION_REGISTER       = "REGISTER"
-	ACTION_NEW_ORDER      = "NEW ORDER"
-	ACTION_CANCEL_ORDER   = "CANCEL ORDER"
-	ACTION_COMPLETE_ORDER = "COMPLETE ORDER"
+	ACTION_REGISTER   = "REGISTER"
+	ACTION_NEW_RECORD = "NEW RECORD"
 )
 
 type Activity struct {
-	ID     uint   `gorm:"primaryKey" json:"id"`
-	UserID uint   `gorm:"not null" json:"user_id"`
-	Title  string `gorm:"not null" json:"title"`
-	Action string `gorm:"not null" json:"action"`
+	ID         uint   `gorm:"primaryKey" json:"id"`
+	RecieverID uint   `gorm:"not null" json:"reciever_id"`
+	Title      string `gorm:"not null" json:"title"`
+	Action     string `gorm:"not null" json:"action"`
+
+	Task Task `gorm:"-" json:"task,omitempty"`
 }
 
 func GetActivitiesByUserId(id uint) (actitivies *[]Activity, herr *DbErr) {
-	err := db.Find(&actitivies, "user_id = ?", id)
+	err := db.Where(&Activity{RecieverID: id}).Find(&actitivies)
 	return actitivies, errGormToHttp(err)
 }
 
 func SeenActivities(id uint) *DbErr {
-	err := db.Delete(&Activity{}, "user_id = ?", id)
+	err := db.Where(&Activity{RecieverID: id}).Delete(&Activity{})
 	return errGormToHttp(err)
 }
