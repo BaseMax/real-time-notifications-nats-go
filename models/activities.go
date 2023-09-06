@@ -12,7 +12,7 @@ const (
 
 type Activity struct {
 	ID         uint   `gorm:"primaryKey" json:"id"`
-	RecieverID uint   `gorm:"not null" json:"user_id"`
+	RecieverID uint   `gorm:"not null" json:"reciever_id"`
 	Title      string `gorm:"not null" json:"title"`
 	Action     string `gorm:"not null" json:"action"`
 
@@ -20,11 +20,11 @@ type Activity struct {
 }
 
 func GetActivitiesByUserId(id uint) (actitivies *[]Activity, herr *DbErr) {
-	err := db.Find(&actitivies, "user_id = ?", id)
+	err := db.Where(&Activity{RecieverID: id}).Find(&actitivies)
 	return actitivies, errGormToHttp(err)
 }
 
 func SeenActivities(id uint) *DbErr {
-	err := db.Delete(&Activity{}, "user_id = ?", id)
+	err := db.Delete(&Activity{RecieverID: id})
 	return errGormToHttp(err)
 }
