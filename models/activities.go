@@ -25,6 +25,6 @@ func GetActivitiesByUserId(id uint) (actitivies *[]Activity, herr *DbErr) {
 }
 
 func SeenActivities(id uint) *DbErr {
-	err := db.Delete(&Activity{RecieverID: id})
+	err := db.Where(&Activity{RecieverID: id}).Delete(&Activity{})
 	return errGormToHttp(err)
 }
